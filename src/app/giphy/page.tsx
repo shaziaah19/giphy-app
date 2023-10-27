@@ -94,7 +94,7 @@ const GiphySearch: React.FC = () => {
             className="text-white bg-yellow-500 hover:bg-yellow-600 py-2 px-4 rounded-lg ml-4"
             onClick={() => searchGifs(GIPHY_TRENDING_URL)}
           >
-            See what's trending
+            See what is trending
           </button>
         </div>
 
