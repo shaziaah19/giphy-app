@@ -1,9 +1,9 @@
 "use client";
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { signOut, useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import { signOut } from "next-auth/react";
 import { redirect } from "next/navigation";
+import dotenv from "dotenv";
 
 type Gif = {
   id: string;
@@ -15,11 +15,12 @@ const GiphySearch: React.FC = () => {
   const [query, setQuery] = useState<string>("");
   const [gifs, setGifs] = useState<Gif[]>([]);
   const [offset, setOffset] = useState<number>(0);
-  const limit: number = 3; // Number of GIFs to display at a time
+  const limit: number = 3;
+  dotenv.config();
 
+  // const GIPHY_API_KEY: string = process.env.GIPHY_API_KEY_STRING ?? "";
   const GIPHY_API_KEY: string = "GlVGYHkr3WSBnllca54iNt0yFbjz7L65";
   const GIPHY_API_URL: string = "https://api.giphy.com/v1/gifs/search";
-  const GIPHY_TRENDING_URL: string = "https://api.giphy.com/v1/gifs/trending";
 
   const searchGifs = async (url: string) => {
     try {
@@ -30,7 +31,7 @@ const GiphySearch: React.FC = () => {
           offset,
         },
       });
-      console.log(response.data); // Add this line to see the response data
+      console.log(response.data);
       const newGifs: Gif[] = response.data.data.map((gif: any) => ({
         id: gif.id,
         url: gif.images.fixed_height.url,
@@ -43,16 +44,17 @@ const GiphySearch: React.FC = () => {
       }
     } catch (error) {
       console.error("Error fetching GIFs:", error);
-      // Handle the error, e.g., show an error message to the user
     }
   };
 
   useEffect(() => {
-    searchGifs(GIPHY_TRENDING_URL);
-  }, []);
+    if (query !== "") {
+      searchGifs(GIPHY_API_URL);
+    }
+  }, [query, offset]);
 
   const handleSearch = () => {
-    setOffset(0); // Reset the offset when a new search query is submitted
+    setOffset(0);
     searchGifs(GIPHY_API_URL);
   };
 
@@ -90,12 +92,6 @@ const GiphySearch: React.FC = () => {
               Search
             </button>
           </div>
-          <button
-            className="text-white bg-yellow-500 hover:bg-yellow-600 py-2 px-4 rounded-lg ml-4"
-            onClick={() => searchGifs(GIPHY_TRENDING_URL)}
-          >
-            See what's trending
-          </button>
         </div>
 
         <div className="flex flex-wrap justify-center rounded-lg overflow-hidden">
@@ -138,5 +134,3 @@ const GiphySearch: React.FC = () => {
 };
 
 export default GiphySearch;
-
-
