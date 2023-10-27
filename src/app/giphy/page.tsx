@@ -138,3 +138,5 @@ const GiphySearch: React.FC = () => {
 };
 
 export default GiphySearch;
+
+
