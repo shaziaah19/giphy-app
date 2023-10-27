@@ -19,14 +19,14 @@ const GiphySearch: React.FC = () => {
 
   const GIPHY_API_KEY: string = "GlVGYHkr3WSBnllca54iNt0yFbjz7L65";
   const GIPHY_API_URL: string = "https://api.giphy.com/v1/gifs/search";
+  const GIPHY_TRENDING_URL: string = "https://api.giphy.com/v1/gifs/trending";
 
-  const searchGifs = async () => {
+  const searchGifs = async (url: string) => {
     try {
-      const response = await axios.get(GIPHY_API_URL, {
+      const response = await axios.get(url, {
         params: {
           api_key: GIPHY_API_KEY,
           q: query,
-
           offset,
         },
       });
@@ -48,12 +48,12 @@ const GiphySearch: React.FC = () => {
   };
 
   useEffect(() => {
-    searchGifs();
-  }, [query, offset]);
+    searchGifs(GIPHY_TRENDING_URL);
+  }, []);
 
   const handleSearch = () => {
     setOffset(0); // Reset the offset when a new search query is submitted
-    searchGifs();
+    searchGifs(GIPHY_API_URL);
   };
 
   const handleNext = () => {
@@ -74,19 +74,27 @@ const GiphySearch: React.FC = () => {
   return (
     <div className="min-h-screen flex bg-gray-200 flex-col items-center justify-center py-6 px-4 sm:px-6 lg:px-8">
       <div className="max-w-4xl w-full space-y-8 p-8 bg-gray-100 rounded-lg shadow-md">
-        <div className="relative">
-          <input
-            type="text"
-            placeholder="Search for GIFs"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            className="block w-full rounded-lg border-gray-300 bg-gray-100 py-2 px-4 text-gray-800 shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent sm:text-sm"
-          />
+        <div className="flex justify-between">
+          <div className="relative flex-grow">
+            <input
+              type="text"
+              placeholder="Search for GIFs"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              className="block w-full rounded-lg border-gray-300 bg-gray-100 py-2 px-4 text-gray-800 shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent sm:text-sm"
+            />
+            <button
+              onClick={handleSearch}
+              className="absolute right-0 top-0 bottom-0 px-4 py-2 bg-black text-white rounded-r-lg hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50"
+            >
+              Search
+            </button>
+          </div>
           <button
-            onClick={handleSearch}
-            className="absolute right-0 top-0 bottom-0 px-4 py-2 bg-black text-white rounded-r-lg hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50"
+            className="text-white bg-yellow-500 hover:bg-yellow-600 py-2 px-4 rounded-lg ml-4"
+            onClick={() => searchGifs(GIPHY_TRENDING_URL)}
           >
-            Search
+            See what's trending
           </button>
         </div>
 
